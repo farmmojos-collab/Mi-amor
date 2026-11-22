@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <title>Para ti ❤️</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600;1,700&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden;touch-action:none}
@@ -32,20 +32,20 @@
   body.lit.again #hint{opacity:1}
 
   /* ---------- carta ---------- */
-  .letter{position:fixed;left:50%;top:4vh;width:min(88vw,430px);transform:translate(-50%,-18px);opacity:0;transition:opacity 2s ease 1.4s,transform 2s ease 1.4s;
-    padding:20px 24px 22px;border-radius:5px;color:#3b2412;
-    background:
-      radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.35),transparent 55%),
-      linear-gradient(170deg,#e3cfa8 0%,#d2b88a 55%,#bf9f6e 100%);
-    box-shadow:0 18px 40px rgba(0,0,0,.6),inset 0 0 36px rgba(120,80,30,.35);z-index:5}
+  .letter{position:fixed;left:50%;top:4vh;width:min(76vw,430px);transform:translate(-50%,-18px);opacity:0;transition:opacity 2s ease 1.4s,transform 2s ease 1.4s;
+    padding:18px 20px 20px;border-radius:4px;color:#3a2514;
+    background:radial-gradient(ellipse at 50% 38%,#ecdcbc 0%,#d6bd90 58%,#a98a5c 100%);
+    border:1px solid rgba(70,40,15,.55);
+    box-shadow:0 14px 32px rgba(0,0,0,.75),inset 0 0 44px rgba(95,60,22,.6),inset 0 0 4px rgba(50,25,8,.7);z-index:5}
   body.lit .letter{opacity:1;transform:translate(-50%,0)}
   body.out .letter{opacity:0;transition:opacity 2s ease}
-  .letter h1{font-family:'Great Vibes',cursive;font-weight:400;font-size:2.2rem;text-align:center;color:#3b2412;margin-bottom:8px}
-  .letter p{font-weight:600;font-size:1.08rem;line-height:1.45;text-align:center;margin-bottom:10px}
+  .letter h1{font-family:'Great Vibes',cursive;font-weight:400;font-size:2rem;text-align:center;color:#3a2514;margin-bottom:6px;line-height:1.1}
+  .letter p{font-style:italic;font-weight:600;font-size:.98rem;line-height:1.38;text-align:center;margin-bottom:8px}
+  .letter p,.letter p .c{font-style:italic!important}
   .c{opacity:0;color:#ff5a1f;text-shadow:0 0 8px #ff8a3a;transition:opacity .5s,color 1.4s,text-shadow 1.4s}
   .c.on{opacity:1;color:#3b2412;text-shadow:none}
   .sig{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:2px}
-  .sig span{font-family:'Great Vibes',cursive;font-size:1.9rem;line-height:1}
+  .sig span{font-family:'Great Vibes',cursive;font-size:1.7rem;line-height:1;color:#3a2514}
   .seal{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8445e,#8c0d26);display:grid;place-items:center;color:#fff;font-size:.95rem;box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 -2px 3px rgba(0,0,0,.3)}
 
   /* ---------- vela ---------- */
@@ -177,7 +177,11 @@ for(let i=0;i<26;i++){
   $('hearts').appendChild(h);
 }
 
-function home(){ return {x:innerWidth-54, y:Math.round(innerHeight*0.45)}; }
+function home(){
+  const L=$('letter'), w=Math.min(innerWidth*.76,430);
+  const right=(innerWidth+w)/2+3, sealY=innerHeight*.04+L.offsetHeight-26;
+  return {x:Math.min(right,innerWidth-46), y:Math.round(sealY-30)};
+}
 function placeHome(anim){
   const p=home(); lighter.classList.toggle('home',!!anim);
   lighter.style.left=p.x+'px'; lighter.style.top=p.y+'px';
@@ -185,8 +189,26 @@ function placeHome(anim){
 placeHome(false);
 addEventListener('resize',()=>{ if(!lit) placeHome(false); });
 
-function startMusic(){ music.volume=.85; music.play().then(()=>$('mute').classList.add('show')).catch(()=>{}); }
-$('mute').onclick=()=>{music.muted=!music.muted;$('mute').textContent=music.muted?'🔇':'🔊'};
+let wantMusic=true;
+function tryPlay(){
+  if(!wantMusic||!music.paused) return;
+  music.volume=.85; const p=music.play();
+  if(p) p.catch(()=>{});
+}
+function startMusic(){ wantMusic=true; $('mute').classList.add('show'); tryPlay(); }
+['pointerdown','pointerup','touchstart','touchend','click','keydown'].forEach(ev=>addEventListener(ev,tryPlay,{passive:true,capture:true}));
+music.addEventListener('canplay',tryPlay);
+music.addEventListener('play',()=>{$('mute').textContent=music.muted?'🔇':'🔊'});
+music.addEventListener('pause',()=>{$('mute').textContent='🔇'});
+$('mute').classList.add('show'); $('mute').textContent='🔇';
+tryPlay();   // intenta sonar apenas abre la página
+music.addEventListener('error',()=>{
+  const t=document.createElement('div');
+  t.textContent='No encuentro musica.mp3: súbelo junto a index.html';
+  t.style.cssText='position:fixed;left:12px;right:60px;bottom:14px;color:#ffb3b3;font:14px sans-serif;z-index:40';
+  document.body.appendChild(t);
+});
+$('mute').onclick=()=>{ wantMusic=true; if(music.paused){tryPlay();return;} music.muted=!music.muted; $('mute').textContent=music.muted?'🔇':'🔊'; };
 
 let lit=false,dragging=false,ox=0,oy=0,run=0;
 const flameTip=()=>{const r=lighter.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+8}};
