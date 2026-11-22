@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Para ti ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;touch-action:none}
+  body{background:#000;font-family:'Cormorant Garamond',Georgia,serif;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+
+  /* ---------- cuarto (aparece al prender) ---------- */
+  #room{position:fixed;inset:0;opacity:0;transition:opacity 2.6s ease;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 68%,rgba(150,60,20,.55),transparent 70%),
+      linear-gradient(180deg,#3a1217 0%,#2a0d12 58%,#1a0709 58.3%,#220b0d 75%,#120507 100%);}
+  #room::before{content:"";position:absolute;inset:0 0 42% 0;
+    background:repeating-linear-gradient(90deg,rgba(0,0,0,.18) 0 2px,transparent 2px 46px)}
+  #room::after{content:"";position:absolute;left:0;right:0;top:58%;height:4px;background:linear-gradient(#5a2328,#2a0d12);box-shadow:0 -1px 0 #6b2c31}
+  body.lit #room{opacity:1}
+  .vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 40%,rgba(0,0,0,.65) 100%)}
+
+  #hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 3s}
+  body.lit #hearts{opacity:1}
+  .h{position:absolute;bottom:-30px;color:rgba(255,150,185,.5);filter:blur(.6px);animation:up linear infinite}
+  @keyframes up{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(var(--dx),-110vh);opacity:0}}
+
+  /* ---------- texto guía ---------- */
+  #hint{position:fixed;left:0;right:0;top:5vh;text-align:center;color:#8a5a4a;font-size:1.05rem;letter-spacing:.03em;font-style:italic;padding:0 54px 0 20px;transition:opacity 1s;z-index:6}
+  body.lit #hint{opacity:0}
+  body.lit.again #hint{opacity:1}
+
+  /* ---------- carta ---------- */
+  .letter{position:fixed;left:50%;top:4vh;width:min(88vw,430px);transform:translate(-50%,-18px);opacity:0;transition:opacity 2s ease 1.4s,transform 2s ease 1.4s;
+    padding:20px 24px 22px;border-radius:5px;color:#3b2412;
+    background:
+      radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.35),transparent 55%),
+      linear-gradient(170deg,#e3cfa8 0%,#d2b88a 55%,#bf9f6e 100%);
+    box-shadow:0 18px 40px rgba(0,0,0,.6),inset 0 0 36px rgba(120,80,30,.35);z-index:5}
+  body.lit .letter{opacity:1;transform:translate(-50%,0)}
+  body.out .letter{opacity:0;transition:opacity 2s ease}
+  .letter h1{font-family:'Great Vibes',cursive;font-weight:400;font-size:2.2rem;text-align:center;color:#3b2412;margin-bottom:8px}
+  .letter p{font-weight:600;font-size:1.08rem;line-height:1.45;text-align:center;margin-bottom:10px}
+  .c{opacity:0;color:#ff5a1f;text-shadow:0 0 8px #ff8a3a;transition:opacity .5s,color 1.4s,text-shadow 1.4s}
+  .c.on{opacity:1;color:#3b2412;text-shadow:none}
+  .sig{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:2px}
+  .sig span{font-family:'Great Vibes',cursive;font-size:1.9rem;line-height:1}
+  .seal{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8445e,#8c0d26);display:grid;place-items:center;color:#fff;font-size:.95rem;box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 -2px 3px rgba(0,0,0,.3)}
+
+  /* ---------- vela ---------- */
+  .candle{position:fixed;left:50%;bottom:11vh;width:98px;margin-left:-49px;filter:brightness(.22);transition:filter 2.4s ease;z-index:4}
+  body.lit .candle{filter:brightness(1)}
+  body.out .candle{filter:brightness(.15);transition:filter 3s}
+  .plate{position:absolute;left:-36px;right:-36px;bottom:-14px;height:32px;border-radius:50%;
+    background:radial-gradient(ellipse at 50% 40%,#f3c460,#b9771c 65%,#6e3e0a);box-shadow:0 10px 18px rgba(0,0,0,.7)}
+  .wax{position:relative;height:170px;transition:height var(--burn,32s) linear}
+  .body{position:absolute;inset:0;overflow:hidden;border-radius:8px 8px 6px 6px;
+    background:linear-gradient(90deg,#8d4e12 0%,#d99a3c 28%,#f5c874 50%,#d08a2c 74%,#7d430c 100%)}
+  .body .top{position:absolute;left:0;right:0;top:0;height:18px;border-radius:50%/100%;background:radial-gradient(ellipse at 50% 100%,#ffe3a0,#e3a443)}
+  .drip{position:absolute;top:8px;width:9px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,#efb85c,#ffdd96,#d58a2a);box-shadow:1px 0 2px rgba(0,0,0,.25)}
+  .drip::after{content:"";position:absolute;left:1px;bottom:-3px;width:7px;height:7px;border-radius:50%;background:#ffdd96}
+  .wick{position:absolute;left:50%;top:-14px;width:3px;height:18px;margin-left:-1.5px;background:linear-gradient(#000,#3a2a1a);border-radius:2px;z-index:2}
+  .fw{position:absolute;left:50%;bottom:100%;width:0;height:0;z-index:3}
+  .flame{position:absolute;left:-14px;bottom:4px;width:28px;height:82px;transform-origin:50% 100%;transform:scale(0);opacity:0;transition:transform .8s,opacity .8s}
+  body.lit .flame{transform:scale(1);opacity:1;animation:flick .22s infinite alternate .8s}
+  body.out .flame{transform:scale(.2);opacity:0;transition:transform 1.2s,opacity 1.2s;animation:none}
+  @keyframes flick{from{transform:scale(1,1) skewX(-2deg)}to{transform:scale(.95,1.05) skewX(2deg)}}
+  .glow{position:absolute;left:-230px;top:-250px;width:460px;height:460px;border-radius:50%;opacity:0;transition:opacity 2.5s;
+    background:radial-gradient(circle,rgba(255,170,70,.55),rgba(255,120,30,.22) 35%,transparent 68%);mix-blend-mode:screen;pointer-events:none;animation:gl 1.6s infinite alternate}
+  body.lit .glow{opacity:1}
+  body.out .glow{opacity:0;transition:opacity 1.2s}
+  @keyframes gl{from{transform:scale(1)}to{transform:scale(1.07)}}
+  .smoke{position:absolute;left:-26px;bottom:8px;width:52px;height:52px;border-radius:50%;opacity:0;filter:blur(9px);
+    background:radial-gradient(circle,rgba(255,255,255,.95),rgba(220,220,220,.5) 60%,transparent 72%)}
+  body.out .smoke{animation:sm 5s ease-out forwards}
+  @keyframes sm{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:.85}100%{opacity:0;transform:translate(var(--sx),-190px) scale(3.4)}}
+
+  /* ---------- encendedor ---------- */
+  #lighter{position:fixed;width:44px;height:120px;z-index:20;touch-action:none;cursor:grab;filter:drop-shadow(0 8px 10px rgba(0,0,0,.8))}
+  #lighter.home{transition:left .9s ease,top .9s ease}
+  #lighter .lf{position:absolute;left:8px;top:0;width:28px;height:58px;transform-origin:50% 100%;transform:scale(0);opacity:0;transition:.25s}
+  #lighter.on .lf{transform:scale(1);opacity:1;animation:flick .18s infinite alternate}
+  #lighter .lf::before{content:"";position:absolute;left:-18px;top:-8px;width:64px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,170,70,.5),transparent 70%)}
+  #lighter .cap{position:absolute;left:3px;right:3px;top:54px;height:16px;border-radius:6px 6px 0 0;background:linear-gradient(90deg,#6a6a6a,#f1f1f1 50%,#777);border:1px solid #222}
+  #lighter .bd{position:absolute;left:0;right:0;top:68px;bottom:0;border-radius:4px 4px 9px 9px;background:linear-gradient(90deg,#3d3d3d,#cfcfcf 45%,#5a5a5a 80%,#2f2f2f);border:1px solid #111}
+  #lighter .bd::after{content:"";position:absolute;left:8px;right:8px;top:12px;height:3px;background:#0006;border-radius:2px}
+  body.lit #lighter{pointer-events:none}
+  .spark{position:fixed;width:4px;height:4px;border-radius:50%;background:#ffd36b;pointer-events:none;z-index:25;animation:sp .7s forwards}
+  @keyframes sp{to{transform:translate(var(--x),var(--y));opacity:0}}
+
+  #mute{position:fixed;bottom:14px;right:12px;z-index:30;border:0;background:rgba(255,255,255,.12);color:#fff;width:38px;height:38px;border-radius:50%;font-size:1rem;cursor:pointer;display:none}
+  #mute.show{display:block}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="fo" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff7a1a"/><stop offset=".45" stop-color="#ffc24d"/><stop offset="1" stop-color="#fff3c8"/>
+    </linearGradient>
+    <linearGradient id="fi" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#3b82ff"/><stop offset=".35" stop-color="#d9ecff"/><stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+    <symbol id="flame" viewBox="0 0 40 100">
+      <path d="M20 0C27 24 38 46 36 70C34 90 27 100 20 100C13 100 6 90 4 70C2 46 13 24 20 0Z" fill="url(#fo)"/>
+      <path d="M20 40C24 56 29 66 28 80C27 92 23 98 20 98C17 98 13 92 12 80C11 66 16 56 20 40Z" fill="url(#fi)" opacity=".95"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="room"></div>
+<div class="vig"></div>
+<div id="hearts"></div>
+
+<div id="hint">Toma el encendedor y acerca tu llama a la mecha en la oscuridad…</div>
+
+<div class="letter" id="letter">
+  <h1>Mi amor,</h1>
+  <p data-t="Cuando todo se pone mal y oscuro, apareces y con tu chispa iluminas todo mi mundo y me acompañas con tu calor."></p>
+  <p data-t="Aunque esta vela se apague sola poco a poco, mi amor por ti nunca se acabará."></p>
+  <div class="sig"><span id="firma" class="c" data-t="Siempre tuyo"></span><div class="seal">♥</div></div>
+</div>
+
+<div class="candle" id="candle">
+  <div class="plate"></div>
+  <div class="wax" id="wax">
+    <div class="fw">
+      <div class="glow"></div>
+      <div class="smoke" style="--sx:-10px"></div>
+      <div class="smoke" style="--sx:18px;animation-delay:.5s"></div>
+      <div class="smoke" style="--sx:-22px;animation-delay:1s"></div>
+      <div class="smoke" style="--sx:8px;animation-delay:1.6s"></div>
+      <svg class="flame" viewBox="0 0 40 100"><use href="#flame"/></svg>
+    </div>
+    <div class="wick" id="wick"></div>
+    <div class="body">
+      <div class="top"></div>
+      <div class="drip" style="left:6px;height:46px"></div>
+      <div class="drip" style="left:21px;height:24px"></div>
+      <div class="drip" style="left:37px;height:60px"></div>
+      <div class="drip" style="left:52px;height:32px"></div>
+      <div class="drip" style="left:67px;height:52px"></div>
+      <div class="drip" style="left:82px;height:28px"></div>
+    </div>
+  </div>
+</div>
+
+<div id="lighter">
+  <svg class="lf" viewBox="0 0 40 100"><use href="#flame"/></svg>
+  <div class="cap"></div><div class="bd"></div>
+</div>
+<button id="mute" aria-label="Sonido">🔊</button>
+<audio id="music" src="musica.mp3" loop preload="auto"></audio>
+
+<script>
+const $=id=>document.getElementById(id);
+const BURN = Number(new URLSearchParams(location.search).get('burn')) || 32;   // segundos que dura la vela
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const music=$('music'), lighter=$('lighter'), wick=$('wick'), wax=$('wax'), body=document.body;
+wax.style.setProperty('--burn',BURN+'s');
+
+/* texto en letras sueltas para el efecto de destello */
+document.querySelectorAll('[data-t]').forEach(el=>{
+  el.innerHTML='';
+  for(const ch of el.dataset.t){const s=document.createElement('span');s.className='c';s.textContent=ch;el.appendChild(s);}
+});
+document.querySelectorAll('#firma .c').forEach(s=>s.className='c'); // la firma ya es .c; sus letras también
+$('firma').classList.remove('c');
+
+/* corazones suaves */
+for(let i=0;i<26;i++){
+  const h=document.createElement('div');h.className='h';h.textContent='♥';
+  h.style.left=Math.random()*100+'vw';h.style.fontSize=(8+Math.random()*22)+'px';
+  h.style.setProperty('--dx',(Math.random()*80-40)+'px');
+  h.style.animationDuration=(9+Math.random()*12)+'s';h.style.animationDelay=(-Math.random()*20)+'s';
+  $('hearts').appendChild(h);
+}
+
+function home(){ return {x:innerWidth-54, y:Math.round(innerHeight*0.45)}; }
+function placeHome(anim){
+  const p=home(); lighter.classList.toggle('home',!!anim);
+  lighter.style.left=p.x+'px'; lighter.style.top=p.y+'px';
+}
+placeHome(false);
+addEventListener('resize',()=>{ if(!lit) placeHome(false); });
+
+function startMusic(){ music.volume=.85; music.play().then(()=>$('mute').classList.add('show')).catch(()=>{}); }
+$('mute').onclick=()=>{music.muted=!music.muted;$('mute').textContent=music.muted?'🔇':'🔊'};
+
+let lit=false,dragging=false,ox=0,oy=0,run=0;
+const flameTip=()=>{const r=lighter.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+8}};
+const wickTop=()=>{const r=wick.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top}};
+
+lighter.addEventListener('pointerdown',e=>{
+  if(lit)return;
+  dragging=true; lighter.setPointerCapture(e.pointerId); lighter.classList.remove('home');
+  const r=lighter.getBoundingClientRect(); ox=e.clientX-r.left; oy=e.clientY-r.top;
+  lighter.classList.add('on'); startMusic(); spark(e.clientX,e.clientY-30);
+  $('hint').textContent='Pásalo por la mecha…';
+});
+lighter.addEventListener('pointermove',e=>{
+  if(!dragging||lit)return;
+  lighter.style.left=(e.clientX-ox)+'px'; lighter.style.top=(e.clientY-oy)+'px';
+  const t=flameTip(), w=wickTop();
+  if(Math.hypot(t.x-w.x,t.y-w.y)<58) light();
+});
+lighter.addEventListener('pointerup',()=>{dragging=false; if(!lit)lighter.classList.remove('on');});
+
+function spark(x,y){
+  for(let i=0;i<8;i++){const s=document.createElement('div');s.className='spark';
+    s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--x',(Math.random()*60-30)+'px');s.style.setProperty('--y',(-Math.random()*60)+'px');
+    document.body.appendChild(s);setTimeout(()=>s.remove(),800);}
+}
+
+async function light(){
+  if(lit)return; lit=true; dragging=false; const my=++run;
+  const w=wickTop(); spark(w.x,w.y);
+  body.classList.add('lit');
+  placeHome(true); lighter.classList.add('on');          // el encendedor vuelve a su lugar, encendido
+  wax.style.height='34px';                                // la vela se va consumiendo
+  await sleep(2600); if(my!==run)return;
+
+  const parts=[...document.querySelectorAll('.letter p'),$('firma')];
+  for(const p of parts){
+    for(const s of p.querySelectorAll('.c')){
+      s.classList.add('on'); await sleep(s.textContent===','||s.textContent==='.'?220:38); if(my!==run)return;
+    }
+    await sleep(450);
+  }
+  await sleep(Math.max(0,BURN*1000-2600-5000));          // lee tranquila mientras la vela se acaba
+  if(my!==run)return;
+
+  $('hint').textContent=''; body.classList.add('out'); body.classList.remove('lit');  // se apaga: humo y oscuridad
+  lighter.classList.remove('on');
+  await sleep(6500); if(my!==run)return;
+  $('hint').textContent='Toca para volver a encender 🕯️'; body.classList.add('again');
+  addEventListener('pointerdown',reset,{once:true});
+}
+
+function reset(){
+  run++; lit=false;
+  body.classList.remove('lit','out','again');
+  wax.style.transition='none'; wax.style.height='170px'; void wax.offsetHeight; wax.style.transition='';
+  document.querySelectorAll('.c.on').forEach(s=>s.classList.remove('on'));
+  $('hint').textContent='Toma el encendedor y acerca tu llama a la mecha en la oscuridad…';
+  placeHome(false);
+}
+</script>
+</body>
+</html>
